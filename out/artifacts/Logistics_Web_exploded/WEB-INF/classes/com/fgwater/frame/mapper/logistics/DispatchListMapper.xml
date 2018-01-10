@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fgwater.frame.mapper.logistics.DispatchListMapper">
+
+	<select id="query" parameterType="HashMap" resultType="HashMap">
+		select u.id, u.taskID, u.dispatchID,u.plateNumber,u.dispatchLines,		
+		(case CONVERT(varchar(10), u.sendCarDate, 20) when '1900-01-01' then '' else CONVERT(varchar(10), u.sendCarDate, 20) end) as sendCarDate,		
+		u.payFreight,u.picture,u.totalLoading,		
+		(case CONVERT(varchar(10), u.loadingDate, 20) when '1900-01-01' then '' else CONVERT(varchar(10), u.loadingDate, 20) end) as loadingDate,
+		u.totalUnloading,
+		(case CONVERT(varchar(10), u.unloadingDate, 20) when '1900-01-01' then '' else CONVERT(varchar(10), u.unloadingDate, 20) end) as unloadingDate,
+		u.difference,u.dispatchersID,e.name as dispatchersName,u.paymentMethod,u.taxYN,u.netReceiptsYN,
+		t.truckType, CONVERT(varchar(19), u.moTime, 20) as moTime,
+		case when datediff( hour,  CONVERT(varchar(19), u.moTime, 20), GETDATE() )>
+		(
+			SELECT  f.modifyTime  FROM    t_logistics_dossier_truck b,t_logistics_dossier_truckType f
+			where b.truckType=f.truckTypeName and   b.plateNumber=u.plateNumber
+		)
+		 then 0 else 1 end as modifyYN,
+		case when datediff( hour,  CONVERT(varchar(19), u.moTime, 20), GETDATE() )>
+		(
+			SELECT  f.delTime  FROM      t_logistics_dossier_truck b,t_logistics_dossier_truckType f
+			where b.truckType=f.truckTypeName and   b.plateNumber=u.plateNumber
+		)
+		 then 0 else 1 end as delYN,
+		case when (u.totalLoading &lt;= 0 or u.totalUnloading &lt;= 0) and datediff( day,  CONVERT(varchar(19), u.moTime, 20), GETDATE() )>
+		(
+			SELECT  f.warnDay  FROM      t_logistics_dossier_truck b,t_logistics_dossier_truckType f
+			where b.truckType=f.truckTypeName and   b.plateNumber=u.plateNumber
+		)
+		 then 1 else 0 end as warnYN		 
+		from mccdesign.dbo.t_logistics_dispatchList u
+		left join mccdesign.dbo.t_system_employee e on u.dispatchersID = e.id
+		left join mccdesign.dbo.t_logistics_dossier_truck t on u.plateNumber = t.plateNumber
+		where 1=1 						
+        <if test="taskID!=null and taskID!=''">
+			and u.taskID = '${taskID}'
+		</if>		
+        <if test="dispatchID!=null and dispatchID!=''">
+			and u.dispatchID like '%${dispatchID}%'
+		</if>		
+		<if test="plateNumber!=null and plateNumber!=''">
+			and u.plateNumber like '%${plateNumber}%'
+		</if>	
+		<if test="dispatchLines!=null and dispatchLines!=''">
+			and u.dispatchLines like '%${dispatchLines}%'
+		</if>	
+		<if test="sendCarDate!=null and sendCarDate!=''">
+			and u.sendCarDate = '${sendCarDate}'
+		</if>	
+		<if test="payFreight!=null and payFreight!=''">
+			and u.payFreight = '${payFreight}'
+		</if>		
+		<if test="totalLoading!=null and totalLoading!=''">
+			and u.totalLoading = '${totalLoading}'
+		</if>				
+		<if test="loadingDate!=null and loadingDate!=''">
+			and u.loadingDate = '${loadingDate}'
+		</if>	
+		<if test="totalUnloading!=null and totalUnloading!=''">
+			and u.totalUnloading = '${totalUnloading}'
+		</if>	
+		<if test="unloadingDate!=null and unloadingDate!=''">
+			and u.unloadingDate = '${unloadingDate}'
+		</if>			
+		<!--   &gt;=   difference  大于等于磅差（千分）  -->
+		<if test="difference!=null and difference!=''">
+			and u.difference &gt;= '${difference}'
+		</if>		
+		<!--   &lt;=   difference  小于等于磅差（千分）  -->
+		<if test="difference!=null and difference!=''">
+			and u.difference &lt;= '${difference}'
+		</if>			
+		<if test="dispatchersName!=null and dispatchersName!=''">
+			and e.name like '%${dispatchersName}%'
+		</if>			
+		<if test="dispatchersID!=null and dispatchersID!=''">
+			and u.dispatchersID = '${dispatchersID}'
+		</if>		
+		<if test="paymentMethod!=null and paymentMethod!=''">
+			and u.paymentMethod = '${paymentMethod}'
+		</if>			
+
+		<if test="taxYN!=null and taxYN!=''">
+			and u.taxYN = '${taxYN}'
+		</if>			
+		
+		<if test="netReceiptsYN!=null and netReceiptsYN!=''">
+			and u.netReceiptsYN = '${netReceiptsYN}'
+		</if>
+		order by u.taskID,u.moTime desc		
+		
+	</select>
+
+
+     <select id="queryDispatchListCalendar" parameterType="HashMap" resultType="HashMap">
+		select u.id, u.taskID, u.dispatchID as cid,(plateNumber+','+e.name) as title,		
+		CONVERT(varchar(10), u.sendCarDate, 20) as sendCarDate,
+		CONVERT(varchar(19), u.sendCarDate, 20) as [start],	
+		CONVERT(varchar(19), u.sendCarDate, 20) as [end],plateNumber,dispatchersID,
+		CONVERT(varchar(19), u.moTime, 20) as moTime
+		from mccdesign.dbo.t_logistics_dispatchList u	
+		left join mccdesign.dbo.t_system_employee e on u.dispatchersID = e.id	
+		where 1=1 						
+        <if test="taskID!=null and taskID!=''">
+			and u.taskID = '${taskID}'
+		</if>
+        <if test="sendCarDate!=null and sendCarDate!=''">
+			and CONVERT(varchar(10), u.sendCarDate, 20)  = '${sendCarDate}'
+		</if>			
+		<if test="dispatchersID!=null and dispatchersID!=''">
+			and u.dispatchersID = '${dispatchersID}'
+		</if>				
+		order by u.dispatchID desc		
+		
+	</select>
+	
+	
+	
+     <select id="exportDispatchList" parameterType="HashMap" resultType="DispatchList">
+		select u.plateNumber,u.dispatchersID,e.name as dispatchersName,
+		CONVERT(varchar(19), u.moTime, 20) as moTime
+		from mccdesign.dbo.t_logistics_dispatchList u
+		left join mccdesign.dbo.t_system_employee e on u.dispatchersID = e.id	
+		where 1=1 					
+        <if test="taskID!=null and taskID!=''">
+			and u.taskID = '${taskID}'
+		</if>
+        <if test="sendCarDate!=null and sendCarDate!=''">
+			and CONVERT(varchar(10), u.sendCarDate, 20)  = '${sendCarDate}'
+		</if>		
+		order by u.moTime desc		
+		
+	</select>	
+
+
+	<select id="getAll" parameterType="HashMap" resultType="DispatchList">
+		select *
+		from mccdesign.dbo.t_logistics_dispatchList 						
+		order by taskID,dispatchID desc	
+	</select>
+	
+	<insert id="saveTable" parameterType="HashMap">
+		insert into mccdesign.dbo.t_logistics_dispatchList (
+			id,taskID,dispatchID,plateNumber,dispatchLines,sendCarDate,
+									payFreight, picture, totalLoading, loadingDate,
+									totalUnloading,unloadingDate,dispatchersID,
+									paymentMethod,taxYN,netReceiptsYN,difference,creator		
+		) values (
+			#{id},#{taskID},#{dispatchID},#{plateNumber},#{dispatchLines},#{sendCarDate},#{payFreight},#{picture},
+			#{totalLoading},#{loadingDate},#{totalUnloading},#{unloadingDate},#{dispatchersID},
+			#{paymentMethod},#{taxYN},#{netReceiptsYN},#{difference},#{creator}
+		)
+	</insert>
+	
+	<update id="updateTable" parameterType="HashMap">
+		update mccdesign.dbo.t_logistics_dispatchList set plateNumber=#{plateNumber},dispatchLines=#{dispatchLines},sendCarDate=#{sendCarDate}
+		,payFreight=#{payFreight},picture=#{picture},totalLoading=#{totalLoading}, loadingDate=#{loadingDate}, totalUnloading=#{totalUnloading}
+		,unloadingDate=#{unloadingDate},dispatchersID=#{dispatchersID},paymentMethod=#{paymentMethod},taxYN=#{taxYN} 
+		,netReceiptsYN=#{netReceiptsYN},difference=#{difference} 
+		where id=#{id}
+	</update>
+	
+	<delete id="deleteTable" parameterType="HashMap">
+	
+		delete from mccdesign.dbo.t_logistics_dispatchList where id=#{id} 
+		
+	</delete>
+	
+	
+	<delete id="batchDelete" parameterType="HashMap">
+	   <!-- 调度员只能删除规定时间内自己分配的车辆 -->
+		delete from mccdesign.dbo.t_logistics_dispatchList where 
+		taskID = #{taskID}
+		 and CONVERT(varchar(10), sendCarDate, 20) = #{sendCarDate}	
+		 and dispatchersID = #{dispatchersID}	
+		 and plateNumber not in 
+				<foreach item="plateNumber" index="index" collection="plateNumber" 
+                         open="(" separator="," close=")">                         
+                        #{plateNumber}
+                </foreach>	
+            and  plateNumber not in     
+			(SELECT k.plateNumber FROM  t_logistics_dossier_truck b,t_logistics_dossier_truckType f,mccdesign.dbo.t_logistics_dispatchList k
+			where b.truckType=f.truckTypeName and   b.plateNumber=k.plateNumber 
+			and datediff( hour,  CONVERT(varchar(19), k.moTime, 20), GETDATE() ) &gt; f.delTime)	
+		
+	</delete>	
+		
+	
+	<select id="checkTaskIDplateNumber" parameterType="HashMap" resultType="Integer">
+	    <!-- 同一任务单同一天只能有一个车牌，判断是否存 -->
+		select count(*) from mccdesign.dbo.t_logistics_dispatchList where 
+		taskID=#{taskID} 
+		and plateNumber=#{plateNumber}  
+		and CONVERT(varchar(10), sendCarDate, 20)=#{sendCarDate} 
+	</select>		
+	
+	
+	<select id="checkUpdateSystemTime" parameterType="HashMap" resultType="Integer">
+	    <!-- 超过规定时间不能修改或删除数据 -->
+		select count(*) from mccdesign.dbo.t_logistics_dispatchList where 
+		taskID=#{taskID} 
+		and plateNumber=#{plateNumber} 
+		and datediff( hour,  CONVERT(varchar(19), moTime, 20), GETDATE() ) &lt;= (
+			SELECT  f.modifyTime FROM   t_logistics_dossier_truck t,t_logistics_dossier_truckType f
+			where t.truckType=f.truckTypeName and   plateNumber=#{plateNumber} 
+		) 
+	</select>		
+	
+
+
+</mapper>

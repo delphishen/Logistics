@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fgwater.frame.mapper.logistics.TaskListMapper">
+
+	<select id="query" parameterType="HashMap" resultType="HashMap">
+		select u.id, u.taskID, CONVERT(varchar(10), u.dateBegin, 20) as dateBegin,CONVERT(varchar(10), u.dateEnd, 20) as dateEnd,
+			   u.customerID,f.customerName,u.loadingPointID,
+			   g.linesName as loadingPoint, u.unloadingPointID,h.linesName as unloadingPoint,u.cargoType,
+			   u.shipName,u.contract,u.trafficVolume,u.residualQuantity,
+			   u.freight,u.payFreight,u.isYN,u.receivablesMethod,u.salesmanID,e.name as salesman,u.taskCondition,
+			   u.contractID,j.contractNO  
+		from mccdesign.dbo.t_logistics_taskList u
+		left join mccdesign.dbo.t_system_employee e on u.salesmanID = e.id
+		left join mccdesign.dbo.t_logistics_dossier_customer f on u.customerID = f.id
+		left join mccdesign.dbo.t_logistics_dossier_lines g on u.loadingPointID = g.id 
+		left join mccdesign.dbo.t_logistics_dossier_lines h on u.unloadingPointID = h.id
+		left join 
+		(
+		select k.id,(k.contractNO+'('+t.customerName+')') as contractNO
+		 from mccdesign.dbo.t_logistics_contract k
+		 left join mccdesign.dbo.t_logistics_dossier_customer t on k.customerID = t.id
+		)		
+		j on u.contractID = j.id
+		where 1=1 						
+	
+        <if test="taskID!=null and taskID!=''">
+			and u.taskID like '%${taskID}%'
+		</if>
+		<!-- &gt;=    大于等于 -->	
+		<if test="dateBegin!=null and dateBegin!=''">
+			and u.dateBegin &gt;= '${dateBegin}'
+		</if>
+		<!-- &lt;=    小于等于 -->	
+		<if test="dateEnd!=null and dateEnd!=''">
+			and u.dateEnd &lt;= '${dateEnd}'
+		</if>		
+		<if test="customerName!=null and customerName!=''">
+			and f.customerName like '%${customerName}%'
+		</if>		
+		<if test="loadingPoint!=null and loadingPoint!=''">
+			and g.linesName like '%${loadingPoint}%'
+		</if>			
+		<if test="unloadingPoint!=null and unloadingPoint!=''">
+			and h.linesName like '%${unloadingPoint}%'
+		</if>			
+		
+		<if test="cargoType!=null and cargoType!=''">
+			and u.cargoType like '%${cargoType}%'
+		</if>			
+
+		<if test="shipName!=null and shipName!=''">
+			and u.shipName like '%${shipName}%'
+		</if>
+		
+		<if test="contract!=null and contract!=''">
+			and u.contract = '${contract}'
+		</if>				
+		<if test="trafficVolume!=null and trafficVolume!=''">
+			and u.trafficVolume = '${trafficVolume}'
+		</if>
+		<if test="residualQuantity!=null and residualQuantity!=''">
+			and u.residualQuantity = '${residualQuantity}'
+		</if>
+		<if test="freight!=null and freight!=''">
+			and u.freight = '${freight}'
+		</if>			
+		<if test="payFreight!=null and payFreight!=''">
+			and u.payFreight = '${payFreight}'
+		</if>		
+		
+		<if test="isYN!=null and isYN!=''">
+			and u.isYN = '${isYN}'
+		</if>	
+		<if test="receivablesMethod!=null and receivablesMethod!=''">
+			and u.receivablesMethod = '${receivablesMethod}'
+		</if>	
+		<if test="salesman!=null and salesman!=''">
+			and e.name like '%${salesman}%'
+		</if>	
+		<if test="taskCondition!=null and taskCondition!=''">
+			and u.taskCondition = '${taskCondition}'
+		</if>									
+			
+		order by taskID desc		
+		
+	</select>
+
+<!--     2017.08.01  dispatchListTree.js 任务分配调度车管理树控件模块中调用 -->	
+	<select id="getTreeAll" parameterType="HashMap" resultType="TaskList">
+		<!--   select u.id, u.taskID, u.dateBegin, u.dateEnd,
+			   u.customerID,f.customerName,
+			    u.loadingPointID, g.linesName as loadingPoint,
+			    u.unloadingPointID, h.linesName as unloadingPoint,
+			    u.cargoType,
+			   u.shipName,u.contract,u.trafficVolume,u.residualQuantity,
+			   u.freight,u.isYN,u.receivablesMethod,u.salesmanID,u.taskCondition,u.fatherId
+		from mccdesign.dbo.t_logistics_taskList u
+		left join mccdesign.dbo.t_logistics_dossier_customer f on u.customerID = f.id
+		left join mccdesign.dbo.t_logistics_dossier_lines g on u.loadingPointID = g.id 
+		left join mccdesign.dbo.t_logistics_dossier_lines h on u.unloadingPointID = h.id								
+		order by u.taskID desc	
+		 -->
+		select u.id, u.taskID,u.customerID,f.customerName+','+g.linesName+'-'+h.linesName as text,
+			   u.fatherId
+		from mccdesign.dbo.t_logistics_taskList u
+		left join mccdesign.dbo.t_logistics_dossier_customer f on u.customerID = f.id
+		left join mccdesign.dbo.t_logistics_dossier_lines g on u.loadingPointID = g.id 
+		left join mccdesign.dbo.t_logistics_dossier_lines h on u.unloadingPointID = h.id	
+		where u.taskCondition='正常' and u.taskID in (select taskID FROM t_logistics_dispatchList 
+		where 1=1 
+		<if test="dispatchersID!=null and dispatchersID!=''">
+			and dispatchersID = '${dispatchersID}'
+		</if>		
+		
+		)								
+		order by u.taskID desc			
+		
+	</select>
+	
+
+	<insert id="saveTable" parameterType="HashMap">
+		insert into mccdesign.dbo.t_logistics_taskList (
+			id,taskID,dateBegin,dateEnd,
+									customerID, loadingPointID, unloadingPointID, cargoType,
+									shipName,contract,trafficVolume,freight,payFreight,
+									isYN,receivablesMethod,salesmanID,taskCondition,contractID		
+		) values (
+			#{id},#{taskID},#{dateBegin},#{dateEnd},#{customerID},#{loadingPointID},#{unloadingPointID},#{cargoType},
+			#{shipName},#{contract},#{trafficVolume},#{freight},#{payFreight},#{isYN},#{receivablesMethod},#{salesmanID},#{taskCondition},#{contractID}
+		)
+	</insert>
+	
+	<update id="updateTable" parameterType="HashMap">
+		update mccdesign.dbo.t_logistics_taskList set dateBegin=#{dateBegin},dateEnd=#{dateEnd},customerID=#{customerID}
+		,loadingPointID=#{loadingPointID},unloadingPointID=#{unloadingPointID},cargoType=#{cargoType}, shipName=#{shipName}, contract=#{contract}
+		,trafficVolume=#{trafficVolume},freight=#{freight},payFreight=#{payFreight},isYN=#{isYN},receivablesMethod=#{receivablesMethod} 
+		,salesmanID=#{salesmanID} ,taskCondition=#{taskCondition} ,contractID=#{contractID} 
+		where id=#{id}
+	</update>
+	
+	<delete id="deleteTable" parameterType="HashMap">
+		<!-- 删除前判断记录是否被其它表引用 -->
+		
+		delete from mccdesign.dbo.t_logistics_taskList where id=#{id} 
+		
+	</delete>
+
+
+</mapper>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fgwater.frame.mapper.system.MenuMapper">
+
+	<select id="getAll" parameterType="HashMap" resultType="HashMap">
+		select id,text,fatherId,iconCls,leaf as menuLeaf,link,seq, 
+    	<!-- (case  when isModify=0 then  '&lt;input type="checkbox" onclick="clickCheck(this,0)"  name="isModify"/&gt;' 
+		when isModify=1 then '&lt;input type="checkbox" onclick="clickCheck(this,1)"  name="isModify"/&gt;'  else '' end ) as isModify		
+		-->	
+		ifnull(isModify,0) as isModify,ifnull(isAdd,0)as isAdd,ifnull(isDel,0)as isDel,ifnull(isSee,0)as isSee
+		from carnetworking.t_system_menu
+		where flag=1 
+		order by seq asc
+	</select>
+
+	<select id="getByUserId" parameterType="String"	resultType="HashMap">
+<!-- 菜单权限分配，读取选择的用户的菜单权限  -->		
+	
+		select t.id,t.text,t.fatherId,t.iconCls,t.leaf as menuLeaf,t.link,t.seq,
+		ifnull(k.isModify,0) as isModify,ifnull(k.isAdd,0)as isAdd,ifnull(k.isDel,0)as isDel,ifnull(k.isSee,0)as isSee
+		from carnetworking.t_system_menu t left join (select * from carnetworking.t_system_user_page_right where userId= #{userId}) k on t.id=k.menuId
+		where exists(
+		select m.id,m.text,m.fatherId,m.iconCls,m.leaf ,m.link,m.seq,r.isModify,r.isAdd,r.isDel,r.isSee
+		from carnetworking.t_system_user_page_right r inner join
+		carnetworking.t_system_menu m on r.menuId = m.id where r.userId = #{userId} and m.flag=1
+		and t.id in (m.id,m.fatherId)   
+		) 			
+		
+		
+	</select>
+
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fgwater.frame.mapper.system.UserMapper">
+
+	<select id="query" parameterType="HashMap" resultType="HashMap">
+		select u.*,e.name as empName from mccdesign.dbo.t_system_user u 
+		left join carnetworking.t_system_employee e on u.empId = e.id
+		where  u.flag = 1 and u.loginName!='root'
+		<if test="userName!=null and userName!=''">
+			and u.loginName like '%${userName}%'
+		</if>
+		<if test="isAdmin!=null and isAdmin!=''">
+			and u.isAdmin = ${isAdmin}
+		</if>
+		order by u.crTime desc
+	</select>
+
+	<select id="getAll" parameterType="HashMap" resultType="User">
+		select id,name,remark from carnetworking.t_system_user where flag = 1
+	</select>
+	
+	<select id="findByEmpId" parameterType="HashMap" resultType="User">
+		select id,empId,loginName,password,isAdmin,email,remark 
+		from carnetworking.t_system_user where flag = 1 and empId=#{empId}
+	</select>
+
+	<select id="getByName" parameterType="String" resultType="User">
+		select * from carnetworking.t_system_user where loginName=#{name} and flag = 1
+
+	</select>
+	
+	<insert id="saveUser" parameterType="HashMap">
+		insert into carnetworking.t_system_user (
+			id,empId,loginName,password,email,isAdmin
+			,remark,creator,crTime,modifier,moTime,flag
+		) values (
+			#{id},#{empId},#{loginName},#{password},#{email},#{isAdmin}
+			,#{remark},#{creator},#{crTime},#{modifier},#{moTime},#{flag}
+		)
+	</insert>
+	
+	<update id="updateUser" parameterType="HashMap">
+		update carnetworking.t_system_user set loginName=#{loginName},empId=#{empId},isAdmin=#{isAdmin}
+		,email=#{email},remark=#{remark}, modifier=#{modifier}, moTime=#{moTime} 
+		where id=#{id}
+	</update>
+	
+	<update id="resetPassword" parameterType="HashMap">
+		update carnetworking.t_system_user set
+		password=#{password},modifier=#{modifier}, moTime=#{moTime} 
+		where id=#{id}
+	</update>	
+	
+	<delete id="deleteUser" parameterType="HashMap">
+		delete from carnetworking.t_system_user where id=#{id}
+	</delete>
+	
+	<select id="checkName" parameterType="HashMap" resultType="Integer">
+		select count(*) from carnetworking.t_system_user where id!=#{id} and loginName = #{loginName}
+	</select>
+
+</mapper>

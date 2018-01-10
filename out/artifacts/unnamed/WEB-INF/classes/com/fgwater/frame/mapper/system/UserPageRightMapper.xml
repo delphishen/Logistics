@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fgwater.frame.mapper.system.UserPageRightMapper">
+
+	<select id="getByUserId" parameterType="String" resultType="HashMap">
+		select id,userId,menuId from t_system_user_page_right where userId = #{userId}
+	</select>
+
+</mapper>

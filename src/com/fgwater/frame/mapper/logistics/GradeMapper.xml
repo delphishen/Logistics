@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fgwater.frame.mapper.logistics.GradeMapper">
+
+	<select id="query" parameterType="HashMap" resultType="HashMap">
+		select id,grade,unloadingStart,unloadingEnd
+		 from mccdesign.dbo.t_logistics_dossier_grade 
+		where 1=1 
+		<if test="grade!=null and grade!=''">
+			and grade like '%${grade}%'
+		</if>								
+		order by grade desc		
+		
+	</select>
+
+	<select id="getAll" parameterType="HashMap" resultType="Grade">
+		select id,grade,unloadingStart,unloadingEnd
+		 from mccdesign.dbo.t_logistics_dossier_grade 
+	</select>
+	
+
+	<insert id="saveTable" parameterType="HashMap">
+		insert into mccdesign.dbo.t_logistics_dossier_grade (
+			id,grade,unloadingStart,unloadingEnd
+		) values (
+			#{id},#{grade},#{unloadingStart},#{unloadingEnd}
+		)
+	</insert>
+	
+	<update id="updateTable" parameterType="HashMap">
+		update mccdesign.dbo.t_logistics_dossier_grade set grade=#{grade},unloadingStart=#{unloadingStart},unloadingEnd=#{unloadingEnd}
+		where id=#{id}
+	</update>
+	
+	<delete id="deleteTable" parameterType="HashMap">
+		delete from mccdesign.dbo.t_logistics_dossier_grade where id=#{id} 
+	</delete>
+	
+	<select id="checkName" parameterType="HashMap" resultType="Integer">
+		select count(*) from mccdesign.dbo.t_logistics_dossier_grade where id!=#{id} and grade=#{grade}  
+	</select>		
+
+
+</mapper>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fgwater.frame.mapper.wbb.QpMapper">
+
+	<select id="query" parameterType="HashMap" resultType="HashMap">
+		select q.*,s.text as sortName from t_wbb_qp q left join
+		t_wbb_qp_sort s on q.sortId = s.id where 1 = 1 and q.flag = 1
+		<if test="name!=null and name!=''">
+			and q.name like '%${name}%'
+		</if>
+		<if test="qpSortId!=null and qpSortId!=''">
+			and q.sortId in (${qpSortId})
+		</if>
+		order by q.crTime desc
+	</select>
+
+	<select id="getCascade" parameterType="Qp" resultType="Qp">
+		SELECT id,name,showFormula,realFormula,leafFormula FROM t_wbb_qp
+		where flag=1
+		<if test="id!=null and id!=''">
+			and id &lt;&gt; #{id} and realFormula like '%${id}%'
+		</if>
+		order by crTime desc
+	</select>
+
+	<select id="getCascadeCq" parameterType="List" resultType="Cq">
+		SELECT id,showFormula,realFormula,leafFormula FROM t_wbb_cq
+		where flag=1 and 1=1
+		<foreach item="item" index="index" collection="list"
+			open="and (" separator="or" close=")">
+			realFormula like '%${item}%'
+		</foreach>
+	</select>
+
+	<select id="getCascadeJq" parameterType="List" resultType="Jq">
+		SELECT id,showFormula,realFormula,leafFormula FROM t_wbb_jq
+		where flag=1 and 1=1
+		<foreach item="item" index="index" collection="list"
+			open="and (" separator="or" close=")">
+			realFormula like '%${item}%'
+		</foreach>
+	</select>
+
+	<select id="getCascadeEl" parameterType="List" resultType="Qp">
+		SELECT id,name,showFormula,realFormula,leafFormula FROM t_wbb_qp
+		where flag=1 and id in
+		<foreach item="item" index="index" collection="list" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+
+</mapper>

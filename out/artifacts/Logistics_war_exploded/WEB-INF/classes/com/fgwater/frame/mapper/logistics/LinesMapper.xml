@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fgwater.frame.mapper.logistics.LinesMapper">
+
+	<select id="query" parameterType="HashMap" resultType="HashMap">
+		select id,linesName,lng,lat
+		 from mccdesign.dbo.t_logistics_dossier_lines 
+		where 1=1 
+		<if test="linesName!=null and linesName!=''">
+			and linesName like '%${linesName}%'
+		</if>								
+		order by linesName desc		
+		
+	</select>
+
+	<select id="getAll" parameterType="HashMap" resultType="Lines">
+		select id,linesName,lng,lat
+		 from mccdesign.dbo.t_logistics_dossier_lines 
+		 order by linesName desc
+	</select>
+	
+
+	<insert id="saveTable" parameterType="HashMap">
+		insert into mccdesign.dbo.t_logistics_dossier_lines (
+			id,linesName,lng,lat
+		) values (
+			#{id},#{linesName},#{lng},#{lat}
+		)
+	</insert>
+	
+	<update id="updateTable" parameterType="HashMap">
+		update mccdesign.dbo.t_logistics_dossier_lines set linesName=#{linesName},lng=#{lng},lat=#{lat}
+		where id=#{id}
+	</update>
+	
+	<delete id="deleteTable" parameterType="HashMap">
+		delete from mccdesign.dbo.t_logistics_dossier_lines where id=#{id} 
+	</delete>
+
+	<select id="checkName" parameterType="HashMap" resultType="Integer">
+		select count(*) from mccdesign.dbo.t_logistics_dossier_lines where id!=#{id} and linesName=#{linesName}  
+	</select>	
+
+
+</mapper>

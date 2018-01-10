@@ -1,0 +1,183 @@
+body {
+	font-size: 12px;
+	font-family: '宋体';
+}
+
+#loading-mask {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 20000;
+	background-color: white;
+}
+
+#loading {
+	position: absolute;
+	left: 45%;
+	top: 40%;
+	padding: 2px;
+	z-index: 20001;
+	height: auto;
+}
+
+#loading a {
+	color: #225588;
+}
+
+#loading .loading-indicator {
+	background: white;
+	color: #444;
+	font: bold 13px tahoma, arial, helvetica;
+	padding: 10px;
+	margin: 0;
+	height: auto;
+}
+
+#loading-msg {
+	font: normal 14px arial, tahoma, sans-serif;
+	color: blue;
+	padding-top: 18px;
+}
+
+div button {
+	border: none;
+	cursor: pointer;
+	width: 16px;
+	height: 16px;
+}
+
+#setting {
+	float: right;
+	width: 100;
+	padding-top: 20px;
+	padding-right: 20px
+}
+
+#welcomeMsg {
+	float: left;
+	width: 200px;
+	padding-top: 20px;
+}
+
+#currentTime {
+	float: left;
+	width: 350px;
+	padding-top: 20px;
+}
+
+#header-topnav {
+	display: inline;
+}
+
+#header-topnav .activeli {
+	display: block;
+	float: left;
+	font-color: white;
+}
+
+#header-topnav li img {
+	position: relative;
+	top: 4px;
+	margin-right: 5px;
+}
+
+#header-topnav li a {
+	color: black;
+	display: block;
+	height: 25px;
+	font-size: 12px;
+	font-weight: bold;
+	line-height: 32px;
+	position: relative;
+	align: center;
+	text-decoration: none;
+	width: auto;
+	margin-right: 10px
+}
+
+#header-topnav .commonli {
+	display: block;
+	float: left;
+	font-color: black;
+}
+
+.lockScreen {
+	background: url(../images/frame/lockScreen.png) no-repeat left top;
+	padding-left: 20px;
+	margin-left: 5px;
+	color: #fff;
+}
+
+.lockScreen:link {
+	text-decoration: none;
+	font-size: 12px;
+	color: #fff
+}
+
+.lockScreen:visited {
+	text-decoration: none;
+	font-size: 12px;
+	color: #fff
+}
+
+.lockScreen:hover {
+	text-decoration: underline;
+	font-size: 12px;
+	color: #fff
+}
+
+.logout {
+	background: url(../images/frame/logout.png) no-repeat left top;
+	padding-left: 20px;
+	margin-left: 5px;
+	color: #fff;
+}
+
+.logout:link {
+	text-decoration: none;
+	font-size: 12px;
+	color: #fff
+}
+
+.logout:visited {
+	text-decoration: none;
+	font-size: 12px;
+	color: #fff
+}
+
+.logout:hover {
+	text-decoration: underline;
+	font-size: 12px;
+	color: #fff
+}
+
+.switchPro {
+	background: url(../images/frame/switchPro.png) no-repeat left top;
+	padding-left: 20px;
+	margin-left: 5px;
+	color: #fff;
+}
+
+.switchPro:link {
+	text-decoration: none;
+	font-size: 12px;
+	color: #fff
+}
+
+.switchPro:visited {
+	text-decoration: none;
+	font-size: 12px;
+	color: #fff
+}
+
+.switchPro:hover {
+	text-decoration: underline;
+	font-size: 12px;
+	color: #fff
+}
+
+.x-grid-back-red {  
+        background: #FF0000;  
+     }

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fgwater.frame.mapper.wbb.KqMapper">
+
+	<select id="query" parameterType="HashMap" resultType="HashMap">
+		select q.id,q.sortId,q.chName,q.enName,q.unit,q.type,q.errorRate,s.text as sortName,q.remark
+		from t_wbb_kq q left join t_wbb_kq_sort s on q.sortId = s.id
+		where 1 = 1 and q.flag = 1
+		<if test="kqChName!=null and kqChName!=''">
+			and q.chName like '%${kqChName}%'
+		</if>
+		<if test="kqEnName!=null and kqEnName!=''">
+			and q.enName like '%${kqEnName}%'
+		</if>
+		<if test="kqSortId!=null and kqSortId!=''">
+			and q.sortId in (${kqSortId})
+		</if>
+		<if test="kqType!=null and kqType!=''">
+			and q.type = ${kqType}
+		</if>
+		<if test="filter!=null and filter!=''">
+			and q.id not in (${filter})
+		</if>
+		order by q.crTime desc
+	</select>
+
+</mapper>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fgwater.frame.mapper.logistics.DispatchListLogWorkflowMapper">
+
+	<select id="query" parameterType="HashMap" resultType="HashMap">
+		SELECT  id, dispatchListLogID, status,logType, 
+		 CONVERT(varchar(19), moTime, 20)  as moTime,
+		 remark, modifier
+		FROM      t_logistics_dispatchList_log_workflow
+		where 1=1
+		<if test="dispatchListLogID!=null ">
+			and dispatchListLogID = '${dispatchListLogID}'
+		</if>					
+		order by moTime desc		
+		
+	</select>
+
+	
+	<insert id="saveTable" parameterType="HashMap">
+		insert into mccdesign.dbo.t_logistics_dispatchList_log_workflow (
+					id, dispatchListLogID,status,logType,remark, moTime, modifier		           
+		) values (
+			#{id},#{dispatchListLogID},#{status},#{logType},#{remark},#{moTime},#{modifier}
+		)
+	</insert>
+	
+	
+	
+	
+	
+
+	
+		
+	
+
+	
+
+
+</mapper>

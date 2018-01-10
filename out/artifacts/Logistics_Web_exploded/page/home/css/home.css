@@ -1,0 +1,145 @@
+/* Margin and padding reset */
+* {
+	margin: 0;
+	padding: 0;
+}
+
+/* Global declarations */
+body {
+	font-family: Tahoma, Verdana, Arial, sans-serif;
+	font-size: 62.5%;
+	position: relative;
+}
+
+img {
+	border: 0;
+}
+
+ul {
+	list-style-type: none;
+}
+
+h1,h2,h3,h4,h5,h6 {
+	clear: both;
+	font-family: "Modata", Tahoma, Arial, sans-serif;
+	font-weight: normal;
+}
+
+h1 {
+	font-size: 28px;
+	margin-bottom: 15px;
+}
+
+h2 {
+	font-size: 18px;
+	margin-bottom: 10px;
+}
+
+h3 {
+	font-family: Tahoma, Arial, sans-serif;
+}
+
+p {
+	font-size: 13px;
+	line-height: 20px;
+	margin-bottom: 15px;
+}
+
+#content {
+	margin-left: 50px;
+	margin-right: 50px;
+	padding-top: 30px;
+	position: relative;
+}
+
+/*BUTTON*/
+ul.dash li {
+	float: left;
+	display: inline;
+	margin: 0 15px 15px 0;
+}
+
+ul.dash li a {
+	display: block;
+	width: 106px;
+	height: 102px;
+	text-decoration: none;
+}
+
+ul.dash li a img {
+	display: inline;
+	width: 48px;
+	margin-left: 29px;
+	margin-top: 20px;
+}
+
+ul.dash li a span {
+	display: block;
+	width: 100%;
+	text-align: center;
+	margin-top: 10px;
+	font-size: 11px;
+}
+
+ul.dash li a {
+	color: #555;
+	background: url('../images/largebut.png') 0 0 no-repeat;
+}
+
+ul.dash li a:hover {
+	background: url('../images/largebut_hover.png') 0 0 no-repeat;
+}
+
+/*NOTIFICATION MESSAGES*/
+.message {
+	display: block;
+	padding: 10px 20px;
+	margin-bottom: 15px;
+}
+
+.message:hover {
+	cursor: pointer;
+}
+
+.message p {
+	width: auto;
+	margin-bottom: 0;
+	margin-left: 60px;
+}
+
+.message h2 {
+	margin-left: 60px;
+	margin-bottom: 5px;
+}
+
+.message p {
+	color: #555;
+}
+
+.message h2 {
+	color: #333;
+}
+
+.success {
+	background: #d4f684 url('../images/icons/tick_48.png') 20px 50%
+		no-repeat;
+	border: 1px solid #739f1d;
+}
+
+.warning {
+	background: #feffc8 url('../images/icons/warning_48.png') 20px 50%
+		no-repeat;
+	border: 1px solid #f1aa2d;
+}
+
+.error {
+	background: #fdcea4 url('../images/icons/stop_48.png') 20px 50%
+		no-repeat;
+	border: 1px solid #c44509;
+}
+
+.information {
+	background: #c3e4fd url('../images/icons/info_48.png') 20px 50%
+		no-repeat;
+	border: 1px solid #688fdc;
+}

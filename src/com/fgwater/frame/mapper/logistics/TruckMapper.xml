@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fgwater.frame.mapper.logistics.TruckMapper">
+
+	<select id="query" parameterType="HashMap" resultType="HashMap">
+		select u.id,u.vehicleManager,u.driver,u.tel,u.plateNumber,u.truckModel,u.DWT,
+		u.truckCargoType,CONVERT(varchar(10), u.buyingTime, 20) as buyingTime,
+		u.truckType,u.gradeID,u.dispatchers,u.vehicleCondition,
+		e.name as dispatchersName 
+		from mccdesign.dbo.t_logistics_dossier_truck u 
+		left join mccdesign.dbo.t_system_employee e on u.dispatchers = e.id
+		where 1=1 
+		<if test="plateNumber!=null and plateNumber!=''">
+			and u.plateNumber like '%${plateNumber}%'
+		</if>
+		<if test="vehicleManager!=null and vehicleManager!=''">
+			and u.vehicleManager like '%${vehicleManager}%'
+		</if>
+		<if test="dispatchersName!=null and dispatchersName!=''">
+			and e.name like '%${dispatchersName}%'
+		</if>		
+		<if test="dispatchers!=null and dispatchers!=''">
+			and u.dispatchers = '${dispatchers}'
+		</if>		
+		<if test="truckType!=null and truckType!=''">
+			and u.truckType = '${truckType}'
+		</if>		
+		<if test="vehicleCondition!=null and vehicleCondition!=''">
+			and u.vehicleCondition = '${vehicleCondition}'
+		</if>			
+
+		<if test="truckModel!=null and truckModel!=''">
+			and u.truckModel like '%${truckModel}%'
+		</if>
+		<if test="truckCargoType!=null and truckCargoType!=''">
+			and u.truckCargoType like '%${truckCargoType}%'
+		</if>				
+		<if test="driver!=null and driver!=''">
+			and u.driver like '%${driver}%'
+		</if>
+		<if test="gradeID!=null and gradeID!=''">
+			and u.gradeID = '${gradeID}'
+		</if>
+		<if test="tel!=null and tel!=''">
+			and u.tel like '%${tel}%'
+		</if>						
+		order by u.vehicleManager desc		
+		
+	</select>
+
+	<select id="getAll" parameterType="HashMap" resultType="Truck">
+		select id,vehicleManager,driver,tel,plateNumber,truckModel,DWT,
+		truckCargoType,CONVERT(varchar(100), buyingTime, 20) as buyingTime,
+		truckType,gradeID,dispatchers,vehicleCondition
+		 from mccdesign.dbo.t_logistics_dossier_truck 
+		 where 1=1 
+		<if test="dispatchers!=null and dispatchers!=''">
+			and dispatchers = '${dispatchers}'
+		</if>			
+		order by dispatchers desc		 
+	</select>
+	
+
+	<insert id="saveTable" parameterType="HashMap">
+		insert into mccdesign.dbo.t_logistics_dossier_truck (
+			id,vehicleManager,driver,tel,plateNumber,truckModel,DWT,
+		truckCargoType,buyingTime,truckType,gradeID,dispatchers,vehicleCondition
+		) values (
+			#{id},#{vehicleManager},#{driver},#{tel},#{plateNumber},#{truckModel},#{DWT},
+			#{truckCargoType},#{buyingTime},#{truckType},#{gradeID},#{dispatchers},#{vehicleCondition}
+		)
+	</insert>
+	
+	<update id="updateTable" parameterType="HashMap">
+		update mccdesign.dbo.t_logistics_dossier_truck set vehicleManager=#{vehicleManager},driver=#{driver},tel=#{tel}
+		,plateNumber=#{plateNumber},truckModel=#{truckModel},DWT=#{DWT}, truckCargoType=#{truckCargoType}, buyingTime=#{buyingTime}
+		,truckType=#{truckType},gradeID=#{gradeID},dispatchers=#{dispatchers},vehicleCondition=#{vehicleCondition} 
+		where id=#{id}
+	</update>
+	
+	<delete id="deleteTable" parameterType="HashMap">
+		<!-- update mccdesign.dbo.t_logistics_dossier_truck set isTwoBs = 0 where id=#{id} -->
+		delete from mccdesign.dbo.t_logistics_dossier_truck where id=#{id} 
+	</delete>
+	
+	<select id="checkPlateNumber" parameterType="HashMap" resultType="Integer">
+		select count(*) from mccdesign.dbo.t_logistics_dossier_truck where id!=#{id} and plateNumber=#{plateNumber}  
+	</select>	
+
+
+</mapper>

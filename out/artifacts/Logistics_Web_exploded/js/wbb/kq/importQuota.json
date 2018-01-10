@@ -1,0 +1,15 @@
+{
+	"success" : true,
+	"results" : 2,
+	"rows" : [{
+				"id" : "e224b3fd23944a1bf795a793d01111",
+				"unit" : "mol/L",
+				"enName" : "Na<sup>+<\/sup>",
+				"chName" : "钠离子"
+			}, {
+				"id" : "e224b3fd23944a1bf795a793d02222",
+				"unit" : "mol/L",
+				"enName" : "Cl<sup>-<\/sup>",
+				"chName" : "氯离子"
+			}]
+}

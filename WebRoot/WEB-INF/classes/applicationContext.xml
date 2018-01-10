@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+	<!-- 启动AspectJ支持 -->
+	<aop:aspectj-autoproxy />
+
+	<!-- 开启注解 -->
+	<context:annotation-config />
+
+	<!-- 自动扫描，排除controller扫描，使service获得事务增强 -->
+	<context:component-scan base-package="com.fgwater">
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+
+	<!--
+		spring工具 <bean id="appUtils" class="com.fgwater.core.utils.AppUtils"
+		/>
+	-->
+
+	<!-- 定义Mapper拦截器  -->
+	<bean id="MapperInterceptor" class="com.fgwater.core.interceptor.MapperInterceptor" />
+
+	<!-- 配置dataSource -->
+	<!--<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"-->
+		<!--destroy-method="close">-->
+		<!--<property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />-->
+		<!--<property name="url"-->
+			<!--value="jdbc:sqlserver://127.0.0.1:1433;DatabaseName=mccdesign" />-->
+		<!--<property name="username" value="sa" />-->
+		<!--<property name="password" value="123456" />-->
+		<!--<property name="maxIdle" value="10" />-->
+		<!--<property name="maxActive" value="100" />-->
+		<!--<property name="maxWait" value="10000" />-->
+		<!--<property name="validationQuery" value="select 1" />-->
+		<!--<property name="testOnBorrow" value="false" />-->
+		<!--<property name="testWhileIdle" value="true" />-->
+		<!--<property name="timeBetweenEvictionRunsMillis" value="1200000" />-->
+		<!--<property name="minEvictableIdleTimeMillis" value="1800000" />-->
+		<!--<property name="numTestsPerEvictionRun" value="5" />-->
+		<!--<property name="defaultAutoCommit" value="true" />-->
+	<!--</bean>-->
+
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		  destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url"
+				  value="jdbc:mysql://110.88.208.246:12201/carnetworking" />
+		<property name="username" value="root" />
+		<property name="password" value="123456" />
+
+	</bean>
+
+
+
+	<!-- mybatis SqlSession工厂 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="configLocation" value="classpath:mybatisConfig.xml" />
+	</bean>
+
+	<!-- mybatis 自动扫描 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.fgwater.frame.mapper"></property>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+
+	<!-- 事务管理器配置,单数据源事务 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- 切面定义 -->
+	<aop:config>
+		<aop:pointcut id="coreSerPointCut"
+			expression="execution(* com.fgwater.core.service..*(..))" />
+		<aop:pointcut id="frameSerPointCut"
+			expression="execution(* com.fgwater.frame.service..*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="coreSerPointCut" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="frameSerPointCut" />
+	</aop:config>
+
+	<!-- 事务通知 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="query*" read-only="true" propagation="NOT_SUPPORTED" />
+			<tx:method name="get*" read-only="true" propagation="NOT_SUPPORTED" />
+			<tx:method name="*" />
+		</tx:attributes>
+	</tx:advice>
+
+	<!-- 使用annotation定义事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+</beans>

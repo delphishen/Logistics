@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fgwater.frame.mapper.logistics.DispatchListLogMapper">
+
+	<select id="query" parameterType="HashMap" resultType="HashMap">
+		SELECT  id, dispatchListID, logType, taskID, plateNumber, payFreight, totalLoading, 
+		(case CONVERT(varchar(10), loadingDate, 20) when '1900-01-01' then '' else CONVERT(varchar(10), loadingDate, 20) end) as loadingDate, 
+		 totalUnloading, 
+		(case CONVERT(varchar(10), unloadingDate, 20) when '1900-01-01' then '' else CONVERT(varchar(10), unloadingDate, 20) end) as unloadingDate, 
+		 payFreightNew, totalLoadingNew, 
+		(case CONVERT(varchar(10), loadingDateNew, 20) when '1900-01-01' then '' else CONVERT(varchar(10), loadingDateNew, 20) end) as loadingDateNew,
+		 totalUnloadingNew, 
+		(case CONVERT(varchar(10), unloadingDateNew, 20) when '1900-01-01' then '' else CONVERT(varchar(10), unloadingDateNew, 20) end) as unloadingDateNew,
+		 remark, moTime, modifier, auditor, auditorTime, status,dispatchersID
+		FROM      t_logistics_dispatchList_log
+		where  status in 
+		<foreach item="status" index="index" collection="status" 
+                         open="(" separator="," close=")">                         
+                        #{status}
+        </foreach>			
+		<if test="dispatchersID!=null and dispatchersID!=''">
+			and dispatchersID = '${dispatchersID}'
+			
+		</if>					
+		order by moTime desc		
+		
+	</select>
+
+
+	<select id="getAll" parameterType="HashMap" resultType="DispatchListLog">
+		select *
+		from mccdesign.dbo.t_logistics_dispatchList_log 						
+		order by moTime desc	
+	</select>
+	
+	<insert id="saveTable" parameterType="HashMap">
+		insert into mccdesign.dbo.t_logistics_dispatchList_log (
+					id, dispatchListID, logType, taskID, plateNumber, payFreight, totalLoading, loadingDate, totalUnloading, 
+		            unloadingDate, payFreightNew, totalLoadingNew, loadingDateNew, totalUnloadingNew, unloadingDateNew, 
+		             modifier, auditor,  creator,dispatchersID	
+		) values (
+			#{id},#{dispatchListID},#{logType},#{taskID},#{plateNumber},#{payFreight},#{totalLoading},#{loadingDate},#{totalUnloading},
+			#{unloadingDate},#{payFreightNew},#{totalLoadingNew},#{loadingDateNew},#{totalUnloadingNew},#{unloadingDateNew},
+			#{modifier},#{auditor},#{creator},#{dispatchersID}
+		)
+	</insert>
+	
+	
+	
+	
+	
+	<update id="updateTable" parameterType="HashMap">
+	 <!-- 修改状态和数据-->
+		update mccdesign.dbo.t_logistics_dispatchList_log set status=#{status},logType=#{logType},payFreightNew=#{payFreightNew},totalLoadingNew=#{totalLoadingNew}
+		,loadingDateNew=#{loadingDateNew},totalUnloadingNew=#{totalUnloadingNew}, unloadingDateNew=#{unloadingDateNew}
+		where id=#{id}
+	</update>
+	
+	<delete id="deleteTable" parameterType="HashMap">
+	
+		delete from mccdesign.dbo.t_logistics_dispatchList_log where id=#{id} 
+		
+	</delete>
+	
+	
+	
+	
+
+
+</mapper>

@@ -1,0 +1,174 @@
+body {
+	margin: 0;
+	font-size: 12px;
+	height: 100%;
+	line-height: 24px;
+	font-family: "宋体";
+	color: #000;
+	background: #fff
+}
+
+a {
+	color: #999;
+	text-decoration: none
+}
+
+a:hover {
+	color: #999;
+	text-decoration: underline
+}
+
+ul {
+	margin: 0;
+	padding: 0
+}
+
+input {
+	font-size: 14px;
+	font-family: Arial;
+	font-weight: bold
+}
+
+ul li {
+	float: left;
+	list-style: none
+}
+
+.header {
+	width: 100%;
+	height: 165px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: url(../images/login/top.png)
+}
+
+.body {
+	position: fixed;
+	top: 165px;
+	width: 100%;
+	bottom: 165px;
+	height: 100%;
+	_position: relative; /**IE6***/
+}
+
+.login {
+	width: 821px;
+	height: 226px;
+	margin: 0 auto;
+	position: relative;
+	overflow: hidden;
+	top: 50%;
+	margin-top: -290px;
+	_margin-top: -278px; /**IE6***/
+}
+
+.login_left {
+	width: 410px;
+	height: 204px;
+	float: left;
+	padding-top: 50px
+}
+
+.login_right {
+	width: 362px;
+	height: 226px;
+	float: left;
+	background: url(../images/login/bg.png) no-repeat;
+	padding-left: 49px
+}
+
+.footer {
+	width: 100%;
+	height: 40px;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	background: url(../images/login/bottom.png);
+	color: #b2ddfb;
+	text-align: center;
+	padding-top: 125px
+}
+
+.logo {
+	width: 410px;
+	height: 70px;
+	float: left;
+	ovrflow: hidden
+}
+
+.linian {
+	width: 397px;
+	height: 119px;
+	float: left;
+	ovrflow: hidden;
+	margin-top: 8px;
+	overflow: hidden;
+	padding-left: 13px
+}
+
+.title {
+	width: 362px;
+	height: 30px;
+	float: left;
+	background: url(../images/login/title.png) no-repeat
+}
+
+.denglu {
+	width: 362px;
+	height: 180px;
+	float: left;
+	overflow: hidden;
+	margin-top: 16px
+}
+
+.denglu li {
+	width: 362px;
+	height: 26px;
+	float: left;
+	margin: 0 0 8px 0;
+	line-height: 26px
+}
+
+.denglu li img {
+	float: none
+}
+
+.inp_txt {
+	width: 210px;
+	height: 23px;
+	background: url(../images/login/fill.jpg);
+	border: #6b90b1 solid 1px;
+	padding: 0;
+	line-height: 23px;
+	padding-left: 2px;
+	margin-left: 10px
+}
+
+.but_login {
+	width: 76px;
+	height: 26px;
+	color: #fff;
+	font-size: 2px;
+	cursor: pointer;
+	background: url(../images/login/sure.png) no-repeat;
+	border: none;
+	padding: 0;
+	margin-left: 43px;
+	display: inline
+}
+
+.but_reset {
+	width: 76px;
+	height: 26px;
+	color: #fff;
+	font-size: 2px;
+	cursor: pointer;
+	background: url(../images/login/reset.png) no-repeat;
+	border: none;
+	padding: 0;
+	margin-left: 30px;
+	display: inline
+}
+
+

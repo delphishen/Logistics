@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fgwater.frame.mapper.system.EmployeeMapper">
+
+	<select id="query" parameterType="HashMap" resultType="HashMap">
+		select id,name,isAdmin,type,phone,remark from mccdesign.dbo.t_system_employee
+		where  1=1 and flag = 1
+		<if test="empName!=null and empName!=''">
+			and name like '%${empName}%'
+		</if>
+		<if test="isAdmin!=null and isAdmin!=''">
+			and isAdmin =${isAdmin}
+		</if>
+		order by crTime desc
+	</select>
+	
+	
+	
+	<select id="getAll" parameterType="HashMap" resultType="Employee">
+		select id,name,isAdmin,type,phone,remark from mccdesign.dbo.t_system_employee
+		where isAdmin=0
+
+	</select>	
+	
+	<insert id="saveEmployee" parameterType="HashMap">
+		insert into mccdesign.dbo.t_system_employee (
+			id,name,isAdmin,remark,phone,type,creator
+			,crTime,modifier,moTime,flag
+		) values(
+			#{id},#{name},#{isAdmin},#{remark},#{phone}
+			,#{type},#{creator},#{crTime},#{modifier},#{moTime},#{flag}
+		)
+	</insert>
+	
+	<update id="updateEmployee" parameterType="HashMap">
+		update mccdesign.dbo.t_system_employee set name=#{name},remark=#{remark}
+		,phone=#{phone},type=#{type},modifier=#{modifier},moTime=#{moTime}
+		where id=#{id}
+	</update>
+	
+	<delete id="deleteEmployee" parameterType="HashMap">
+		delete from mccdesign.dbo.t_system_employee where id=#{id}
+	</delete>
+	
+	<select id="checkName" parameterType="HashMap" resultType="Integer">
+		select count(*) from mccdesign.dbo.t_system_employee where id!=#{id} and name=#{name}
+	</select>
+
+</mapper>

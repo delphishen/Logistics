@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+	<!-- 监听器web容器启动时，加载初始化spring容器 -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- spring配置文件的位置 -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:applicationContext.xml</param-value>
+	</context-param>
+
+	<!-- 配置SpringMVC核心控制器 -->
+	<servlet>
+		<servlet-name>springMVC</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<!-- 配置DispatcherServlet的一个初始化参数，作用是配置SpringMVC配置文件的位置和名称 -->
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<!-- classpath表示类路径下的spring-mvc.xml文件 -->
+			<param-value>classpath:springMVC.xml</param-value>
+		</init-param>
+		<!-- load-on-startup 表示在web应用启动时，即加载该DispatcherServlet，而不是等到首次请求再中载 -->
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<filter>
+		<filter-name>onlineFilter</filter-name>
+		<filter-class>com.fgwater.frame.web.filter.OnlineFilter</filter-class>
+	</filter>
+	
+	<filter-mapping>
+		<filter-name>onlineFilter</filter-name>
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>onlineFilter</filter-name>
+		<url-pattern>*.jsp</url-pattern>
+	</filter-mapping>
+
+	<!-- 为DispatcherServlet建立映射 -->
+	<servlet-mapping>
+		<servlet-name>springMVC</servlet-name>
+		<!-- / 表示可以应答所有请求，也就是将所有的请求都交给Spring的DispatcherServlet来处理 -->
+		<!-- *.do 只处理扩展名为do的请求交给Spring的DispatcherServlet来处理 -->
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>
+
+	<!-- 防止Spring内存溢出监听器 -->
+	<listener>
+		<listener-class>
+			org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+	</listener>
+
+	<welcome-file-list>
+		<welcome-file>login.jsp</welcome-file>
+	</welcome-file-list>
+</web-app>

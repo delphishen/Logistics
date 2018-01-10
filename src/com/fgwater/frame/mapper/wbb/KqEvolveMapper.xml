@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fgwater.frame.mapper.wbb.KqEvolveMapper">
+
+	<select id="query" parameterType="HashMap" resultType="HashMap">
+		select e.id,e.type,e.chName,e.enName,k.id as kqId,k.sortId,s.text as sortName
+		from t_wbb_kq_evolve e 
+		left join t_wbb_kq k on e.kqId = k.id
+		left join t_wbb_kq_sort s on k.sortId = s.id
+		where 1 = 1 and e.flag = 1
+		<if test="chName!=null and chName!=''">
+			and e.chName like '%${chName}%'
+		</if>
+		<if test="enName!=null and enName!=''">
+			and e.enName like '%${enName}%'
+		</if>
+		<if test="sortId!=null and sortId!=''">
+			and k.sortId in (${sortId})
+		</if>
+		<if test="kqId!=null and type!=null and type!='' and kqId!=''">
+			and e.id != (select id from t_wbb_kq_evolve where kqId = #{kqId} and type = ${type})
+		</if>
+		order by e.crTime desc
+	</select>
+
+	<select id="getByKqId" parameterType="String" resultType="KqEvolve">
+		select id,kqId,chName,enName,type from t_wbb_kq_evolve
+		where 1=1 and flag = 1 and kqId = #{kqId}
+		order by type asc
+	</select>
+	
+	<select id="getByKqIdAndType" parameterType="HashMap" resultType="KqEvolve">
+		select * from t_wbb_kq_evolve
+		where 1=1 and flag = 1 and kqId = #{kqId} and type=#{type}
+		order by type asc
+	</select>
+	
+	<delete id="deleteByKqId" parameterType="String">
+		delete from t_wbb_kq_evolve where kqId = #{kqId}
+	</delete>
+	
+</mapper>

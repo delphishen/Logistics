@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fgwater.frame.mapper.wbb.StandardMapper">
+
+	<select id="query" parameterType="HashMap" resultType="HashMap">
+		select s.id,s.filterSortId,s.belongSortId,s.name,s.number,s.remark,
+		f.text as filterSortName,b.name as belongSortName
+		from t_wbb_standard s
+		left join t_wbb_standard_filter_sort f on s.filterSortId = f.id
+		left join t_info_standard_belong_sort b on s.belongSortId = b.id
+		where 1 = 1 and s.flag = 1
+		<if test="name!=null and name!=''">
+			and s.name like '%${name}%'
+		</if>
+		<if test="belongSortId!=null and belongSortId!=''">
+			and s.belongSortId = #{belongSortId}
+		</if>
+		<if test="filterSortId!=null and filterSortId!=''">
+			and s.filterSortId in (${filterSortId})
+		</if>
+		order by s.crTime desc
+	</select>
+
+</mapper>

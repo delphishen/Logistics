@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fgwater.frame.mapper.system.AttachMapper">
+
+	<select id="query" parameterType="HashMap" resultType="HashMap">
+		select * from t_system_attach
+		where 1=1 and flag = 1
+		<if test="realName!=null and realName!=''">
+			and realName like '%${realName}%'
+		</if>
+		<if test="uploadTimeB!=null and uploadTimeB!=''">
+			and uploadTime &gt; #{uploadTimeB}
+		</if>
+		<if test="uploadTimeE!=null and uploadTimeE!=''">
+			and uploadTime &lt; #{uploadTimeE}
+		</if>
+		<if test="link!=null and link!=''">
+			and link like '${link}'
+		</if>		
+		
+		order by crTime desc
+	</select>
+	
+	<select id="getById" parameterType="String" resultType="Attach">
+		select * from t_system_attach
+		where 1=1 and flag = 1 and id = #{id}
+	</select>
+</mapper>

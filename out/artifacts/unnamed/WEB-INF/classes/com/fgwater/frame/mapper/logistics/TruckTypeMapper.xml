@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fgwater.frame.mapper.logistics.TruckTypeMapper">
+
+	<select id="query" parameterType="HashMap" resultType="HashMap">
+		SELECT   id, truckTypeName, warnDay,delTime,modifyTime
+		FROM      t_logistics_dossier_truckType
+		where 1=1 
+		<if test="truckTypeName!=null and truckTypeName!=''">
+			and truckTypeName like '%${truckTypeName}%'
+		</if>
+		<if test="warnDay!=null and warnDay!=''">
+			and warnDay = #{warnDay}
+		</if>		
+		order by truckTypeName desc		
+		
+	</select>
+
+	<select id="getAll" parameterType="HashMap" resultType="TruckType">
+		SELECT   id, truckTypeName, warnDay,delTime,modifyTime
+		FROM      t_logistics_dossier_truckType	
+	 
+	</select>
+	
+
+	<insert id="saveTable" parameterType="HashMap">
+		insert into mccdesign.dbo.t_logistics_dossier_truckType (
+			id,truckTypeName,warnDay,delTime,modifyTime
+		) values (
+			#{id},#{truckTypeName},#{warnDay},#{delTime},#{modifyTime}
+		)
+	</insert>
+	
+	<update id="updateTable" parameterType="HashMap">
+		update mccdesign.dbo.t_logistics_dossier_truckType set 
+		truckTypeName=#{truckTypeName},warnDay=#{warnDay}
+		,delTime=#{delTime},modifyTime=#{modifyTime}
+		where id=#{id}
+	</update>
+	
+	<delete id="deleteTable" parameterType="HashMap">
+		<!--  -->
+		delete from mccdesign.dbo.t_logistics_dossier_truckType where id=#{id} 
+	</delete>
+	
+	<select id="checkTruckTypeName" parameterType="HashMap" resultType="Integer">
+		select count(*) from mccdesign.dbo.t_logistics_dossier_truckType where id!=#{id} and truckTypeName=#{truckTypeName}  
+	</select>	
+
+
+</mapper>

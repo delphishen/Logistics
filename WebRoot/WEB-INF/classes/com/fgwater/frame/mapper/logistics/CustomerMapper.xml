@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fgwater.frame.mapper.logistics.CustomerMapper">
+
+	<select id="query" parameterType="HashMap" resultType="HashMap">
+		select id,customerName,linkman,customerTel,address,remark
+		 from mccdesign.dbo.t_logistics_dossier_customer 
+		where 1=1 
+		<if test="customerName!=null and customerName!=''">
+			and customerName like '%${customerName}%'
+		</if>
+		
+		<if test="linkman!=null and linkman!=''">
+			and linkman like '%${linkman}%'
+		</if>		
+		<if test="tel!=null and tel!=''">
+			and customerTel like '%${customerTel}%'
+		</if>		
+		<if test="address!=null and address!=''">
+			and address like '%${address}%'
+		</if>
+		<if test="remark!=null and remark!=''">
+			and remark like '%${remark}%'
+		</if>												
+		order by customerName desc		
+		
+	</select>
+
+	<select id="getAll" parameterType="HashMap" resultType="Customer">
+		select id,customerName,linkman,customerTel,address,remark
+		 from mccdesign.dbo.t_logistics_dossier_customer 
+		 order by customerName desc
+	</select>
+	
+
+	<insert id="saveTable" parameterType="HashMap">
+		insert into mccdesign.dbo.t_logistics_dossier_customer (
+			id,customerName,linkman,customerTel,address,remark
+		) values (
+			#{id},#{customerName},#{linkman},#{customerTel},#{address},#{remark}
+		)
+	</insert>
+	
+	<update id="updateTable" parameterType="HashMap">
+		update mccdesign.dbo.t_logistics_dossier_customer set 
+		customerName=#{customerName},linkman=#{linkman},customerTel=#{customerTel},address=#{address},remark=#{remark}
+		where id=#{id}
+	</update>
+	
+	<delete id="deleteTable" parameterType="HashMap">
+		delete from mccdesign.dbo.t_logistics_dossier_customer where id=#{id} 
+	</delete>
+	
+	<select id="checkName" parameterType="HashMap" resultType="Integer">
+		select count(*) from mccdesign.dbo.t_logistics_dossier_customer where id!=#{id} and customerName=#{customerName}  
+	</select>		
+
+
+</mapper>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fgwater.frame.mapper.wbb.StandardCfgMapper">
+
+	<select id="query" parameterType="HashMap" resultType="HashMap">
+		select c.id,c.kqId,c.limitType,c.value,c.standardId
+		,k.chName as kqChName,k.enName as kqEnName,k.unit
+		from t_wbb_standard_cfg c
+		left join t_wbb_standard s ON c.standardId = s.id
+		left join t_wbb_kq k on c.kqId = k.id 
+		where 1 = 1 and s.flag = 1 and c.standardId = #{standardId}
+		order by c.crTime desc
+	</select>
+
+</mapper>
